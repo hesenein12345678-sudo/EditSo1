@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شرح تطبيق EditSo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        /* إعدادات عامة وإلغاء التأثير الأزرق */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        :root {
+            --bg-color-1: #090114;
+            --bg-color-2: #1c053a;
+            --bg-color-3: #2d0a59;
+            --neon-purple: #b829ff;
+            --text-main: #ffffff;
+            --text-muted: #e0c2ff;
+            --glass-bg: rgba(28, 5, 58, 0.4);
+            --glass-border: rgba(184, 41, 255, 0.25);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(-45deg, var(--bg-color-1), var(--bg-color-2), var(--bg-color-3), var(--bg-color-1));
+            background-size: 300% 300%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 15px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .premium-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 30px 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(184, 41, 255, 0.05);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .premium-container::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(184, 41, 255, 0.1) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .app-icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 22px;
+            object-fit: cover;
+            border: 1.5px solid rgba(184, 41, 255, 0.5);
+            box-shadow: 0 0 20px rgba(184, 41, 255, 0.3);
+            margin-bottom: 20px;
+            animation: floating 4s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); box-shadow: 0 0 20px rgba(184, 41, 255, 0.3); }
+            50% { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(184, 41, 255, 0.5); }
+            100% { transform: translateY(0px); box-shadow: 0 0 20px rgba(184, 41, 255, 0.3); }
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            background: linear-gradient(to left, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(184, 41, 255, 0.2);
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .step-card {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-right: 3px solid var(--neon-purple);
+            border-radius: 14px;
+            padding: 16px 18px;
+            text-align: right;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateX(-3px);
+            background: rgba(184, 41, 255, 0.05);
+            border-color: rgba(184, 41, 255, 0.2);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: linear-gradient(135deg, var(--neon-purple), #6a00ff);
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 12px;
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        .step-card p {
+            margin: 0;
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: #eaeaea;
+            font-weight: 600;
+        }
+
+        .path-code {
+            display: block;
+            background: rgba(0, 0, 0, 0.4);
+            color: #ff79c6;
+            font-family: monospace;
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 11.5px;
+            direction: ltr;
+            text-align: left;
+            border: 1px solid rgba(255, 121, 198, 0.15);
+        }
+
+        .warning-box {
+            background: linear-gradient(90deg, rgba(255, 71, 87, 0.1), rgba(0, 0, 0, 0));
+            border-right: 3px solid #ff4757;
+            color: #ffb8b8;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 12.5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: right;
+            line-height: 1.5;
+        }
+
+        .buttons-wrapper {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px 0;
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-tiktok {
+            background: linear-gradient(45deg, #111, #ff0050);
+            box-shadow: 0 5px 15px rgba(255, 0, 80, 0.2);
+            border: 1px solid rgba(255, 0, 80, 0.3);
+        }
+
+        .btn-telegram {
+            background: linear-gradient(45deg, #005f99, #0088cc);
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.2);
+            border: 1px solid rgba(0, 136, 204, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="premium-container">
+        <!-- أيقونة التطبيق -->
+        <img src="icon.png" alt="EditSo Logo" class="app-icon">
+
+        <h1>دليل استخدام EditSo</h1>
+
+        <div class="steps-container">
+            <!-- الخطوة الأولى -->
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <p>قم بجلب ملف <b>so</b> المُراد تعديله وضعه داخل المجلد التالي:</p>
+                <span class="path-code">FolderTheEditSo/BeforSo</span>
+            </div>
+
+            <!-- الخطوة الثانية -->
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <p>افتح التطبيق واضغط على زر <b>(فحص so)</b>. ستظهر لك النصوص والصور لتعديلها بسهولة تامة.</p>
+            </div>
+
+            <!-- الخطوة الثالثة -->
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <p>اضغط على زر <b>(تصدير)</b>، ثم توجه إلى المجلد التالي للحصول على الملف المُعدل:</p>
+                <span class="path-code">FolderTheEditSo/AfterSo</span>
+            </div>
+        </div>
+
+        <!-- التنبيه -->
+        <div class="warning-box">
+            <span>⚠️</span>
+            <span>ملاحظة هامة: يجب مراعاة عدد البايتات للكلمات المستبدلة لضمان عدم تخريب ملف الـ so.</span>
+        </div>
+
+        <!-- أزرار التواصل -->
+        <div class="buttons-wrapper">
+            <a href="https://www.tiktok.com/@xezn99" target="_blank" class="action-btn btn-tiktok">
+                TikTok
+            </a>
+            <a href="https://t.me/xezn9" target="_blank" class="action-btn btn-telegram">
+                TeleGram
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
